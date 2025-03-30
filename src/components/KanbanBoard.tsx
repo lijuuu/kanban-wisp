@@ -16,12 +16,14 @@ interface Task {
 }
 
 const KanbanBoard = () => {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: "1", content: "Task 1", status: "todo" },
-    { id: "2", content: "Task 2", status: "todo" },
-    { id: "3", content: "Task 3", status: "progress", startTime: Date.now() - 600000 },
-    { id: "4", content: "Task 4", status: "done", startTime: Date.now() - 3600000, endTime: Date.now() - 1800000 },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    return storedTasks ? JSON.parse(storedTasks) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
