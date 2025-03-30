@@ -12,13 +12,14 @@ interface ColumnProps {
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent, status: TaskStatus) => void;
   onAddTask?: () => void;
+  onDeleteTask: (id: string) => void;
 }
 
 const statusColorMap: Record<TaskStatus, string> = {
-  todo: "border-kanban-todo",
-  progress: "border-kanban-progress",
-  done: "border-kanban-done",
-  forfeit: "border-kanban-forfeit",
+  todo: "border-gray-500",
+  progress: "border-blue-500",
+  done: "border-green-500",
+  forfeit: "border-red-500",
 };
 
 const Column = ({
@@ -29,13 +30,14 @@ const Column = ({
   onDragOver,
   onDrop,
   onAddTask,
+  onDeleteTask,
 }: ColumnProps) => {
   return (
     <div
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, status)}
       className={cn(
-        "kanban-column flex flex-col p-4 bg-black/20 rounded-md border-t-2",
+        "kanban-column flex flex-col p-4 bg-black/80 rounded-md border-t-2",
         statusColorMap[status]
       )}
     >
@@ -63,6 +65,7 @@ const Column = ({
               content={task.content}
               status={task.status}
               onDragStart={onDragStart}
+              onDelete={onDeleteTask}
             />
           ))}
       </div>

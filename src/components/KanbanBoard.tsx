@@ -5,7 +5,6 @@ import { TaskStatus } from "./Task";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 
 interface Task {
   id: string;
@@ -46,16 +45,15 @@ const KanbanBoard = () => {
       
       setTasks(updatedTasks);
       setDraggedTaskId(null);
-      
-      toast({
-        title: "Task moved",
-        description: `Task moved to ${status}`,
-      });
     }
   };
 
   const handleAddTask = () => {
     setIsDialogOpen(true);
+  };
+
+  const handleDeleteTask = (id: string) => {
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
   const handleCreateTask = () => {
@@ -69,16 +67,11 @@ const KanbanBoard = () => {
       setTasks([...tasks, newTask]);
       setNewTaskContent("");
       setIsDialogOpen(false);
-      
-      toast({
-        title: "Task created",
-        description: "New task added to Todo",
-      });
     }
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-black">
       <h2 className="text-2xl font-bold mb-6 text-white text-center">Kanban Board</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -90,6 +83,7 @@ const KanbanBoard = () => {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onAddTask={handleAddTask}
+          onDeleteTask={handleDeleteTask}
         />
         <Column
           title="In Progress"
@@ -98,6 +92,7 @@ const KanbanBoard = () => {
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
+          onDeleteTask={handleDeleteTask}
         />
         <Column
           title="Done"
@@ -106,6 +101,7 @@ const KanbanBoard = () => {
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
+          onDeleteTask={handleDeleteTask}
         />
         <Column
           title="Forfeit"
@@ -114,12 +110,13 @@ const KanbanBoard = () => {
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
+          onDeleteTask={handleDeleteTask}
         />
       </div>
 
       {/* Dialog for adding new task */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-[#1E2433] text-white border-none">
+        <DialogContent className="sm:max-w-[425px] bg-black text-white border-gray-700">
           <DialogHeader>
             <DialogTitle>Add New Task</DialogTitle>
           </DialogHeader>
@@ -127,19 +124,19 @@ const KanbanBoard = () => {
             value={newTaskContent}
             onChange={(e) => setNewTaskContent(e.target.value)}
             placeholder="Enter task description"
-            className="bg-[#25293A] border-[#3A3F4E] text-white"
+            className="bg-gray-900 border-gray-700 text-white"
           />
           <DialogFooter>
             <Button
               variant="outline"
               onClick={() => setIsDialogOpen(false)}
-              className="bg-transparent text-white border-white/30 hover:bg-white/10"
+              className="bg-transparent text-white border-gray-700 hover:bg-gray-800"
             >
               Cancel
             </Button>
             <Button 
               onClick={handleCreateTask}
-              className="bg-kanban-todo hover:bg-kanban-todo/90 text-white"
+              className="bg-gray-500 hover:bg-gray-600 text-white"
             >
               Create
             </Button>
