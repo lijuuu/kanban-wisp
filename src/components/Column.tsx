@@ -30,6 +30,13 @@ const statusColorMap: Record<TaskStatus, string> = {
   forfeit: "border-red-500",
 };
 
+const statusBgMap: Record<TaskStatus, string> = {
+  todo: "from-gray-700/40 to-gray-900/60",
+  progress: "from-blue-900/40 to-blue-950/60",
+  done: "from-green-900/40 to-green-950/60",
+  forfeit: "from-red-900/40 to-red-950/60",
+};
+
 const Column = ({
   title,
   status,
@@ -48,45 +55,46 @@ const Column = ({
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, status)}
       className={cn(
-        "kanban-column flex flex-col p-2 bg-black border-t-4 h-full",
-        statusColorMap[status]
+        "kanban-column flex flex-col p-2 glassmorphism border-t-4 h-full bg-gradient-to-b",
+        statusColorMap[status],
+        statusBgMap[status]
       )}
     >
-      <CardHeader className="px-3 py-2 space-y-0">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-medium text-white text-sm">{title}</h3>
-            <div className="text-xs text-white/60 mt-1">
-              {columnTasks.length} {columnTasks.length === 1 ? "task" : "tasks"}
-            </div>
+      <CardHeader className="px-3 py-3 space-y-0 rounded-t-lg">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold text-white text-lg tracking-tight">{title}</h3>
+            <span className="task-counter">{columnTasks.length}</span>
           </div>
           {status === "todo" && onAddTask && (
             <Button
               onClick={onAddTask}
               variant="ghost"
               size="sm"
-              className="px-1 hover:bg-transparent"
+              className="px-1 hover:bg-gray-800/50 rounded-full h-8 w-8 flex items-center justify-center"
             >
-              <PlusCircle className="h-5 w-5 text-white/70 hover:text-white" />
+              <PlusCircle className="h-5 w-5 text-white/80 hover:text-white" />
             </Button>
           )}
         </div>
       </CardHeader>
       
-      <CardContent className="flex-1 px-2 pt-0">
-        {columnTasks.map((task) => (
-          <Task
-            key={task.id}
-            id={task.id}
-            content={task.content}
-            status={task.status}
-            startTime={task.startTime}
-            endTime={task.endTime}
-            onDragStart={onDragStart}
-            onDelete={onDeleteTask}
-            onEdit={onEditTask}
-          />
-        ))}
+      <CardContent className="flex-1 px-2 pt-2 overflow-y-auto scrollbar-none">
+        <div className="space-y-3">
+          {columnTasks.map((task) => (
+            <Task
+              key={task.id}
+              id={task.id}
+              content={task.content}
+              status={task.status}
+              startTime={task.startTime}
+              endTime={task.endTime}
+              onDragStart={onDragStart}
+              onDelete={onDeleteTask}
+              onEdit={onEditTask}
+            />
+          ))}
+        </div>
       </CardContent>
     </Card>
   );
