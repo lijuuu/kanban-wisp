@@ -116,8 +116,6 @@ const KanbanBoard = () => {
 
   return (
     <div className="p-4 bg-black h-full">
-      <h2 className="text-2xl font-bold mb-6 text-white text-center">Kanban Board</h2>
-      
       <Card className="bg-black/30 border-gray-800 mb-6 text-white">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Task Overview</CardTitle>
