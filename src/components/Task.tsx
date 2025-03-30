@@ -1,7 +1,7 @@
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Trash2, Clock } from "lucide-react";
+import { Trash2, Clock, Edit2 } from "lucide-react";
 
 export type TaskStatus = "todo" | "progress" | "done" | "forfeit";
 
@@ -13,6 +13,7 @@ export interface TaskProps {
   endTime?: number;
   onDragStart: (e: React.DragEvent, id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string, newContent: string) => void;
 }
 
 const statusColorMap: Record<TaskStatus, string> = {
@@ -29,9 +30,12 @@ const Task = ({
   startTime, 
   endTime, 
   onDragStart, 
-  onDelete 
+  onDelete,
+  onEdit
 }: TaskProps) => {
   const taskRef = useRef<HTMLDivElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
 
   // Calculate elapsed time
   const getElapsedTime = () => {
@@ -50,19 +54,50 @@ const Task = ({
 
   const elapsedTime = getElapsedTime();
 
+  const handleEditSubmit = () => {
+    if (editedContent.trim()) {
+      onEdit(id, editedContent);
+    } else {
+      setEditedContent(content); // Reset if empty
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleEditSubmit();
+    } else if (e.key === 'Escape') {
+      setEditedContent(content);
+      setIsEditing(false);
+    }
+  };
+
   return (
     <div
       ref={taskRef}
-      draggable
-      onDragStart={(e) => onDragStart(e, id)}
+      draggable={!isEditing}
+      onDragStart={(e) => !isEditing && onDragStart(e, id)}
       className={cn(
         "task-card cursor-grab active:cursor-grabbing rounded px-3 py-2 mb-3 text-sm text-white flex justify-between items-center",
-        statusColorMap[status]
+        statusColorMap[status],
+        isEditing && "cursor-default"
       )}
       style={{ minWidth: "200px" }}
     >
       <div className="flex flex-col w-full">
-        <span className="truncate">{content}</span>
+        {isEditing ? (
+          <input
+            type="text"
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            onBlur={handleEditSubmit}
+            onKeyDown={handleKeyDown}
+            className="bg-transparent border-b border-white/30 outline-none text-white w-full"
+            autoFocus
+          />
+        ) : (
+          <span className="truncate">{content}</span>
+        )}
         {elapsedTime && (
           <div className="flex items-center text-xs text-white/80 mt-1">
             <Clock size={12} className="mr-1" />
@@ -70,15 +105,28 @@ const Task = ({
           </div>
         )}
       </div>
-      <button 
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete(id);
-        }}
-        className="ml-2 text-white/70 hover:text-white"
-      >
-        <Trash2 size={14} />
-      </button>
+      <div className="flex items-center">
+        {!isEditing && (
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditing(true);
+            }}
+            className="ml-2 text-white/70 hover:text-white"
+          >
+            <Edit2 size={14} />
+          </button>
+        )}
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(id);
+          }}
+          className="ml-2 text-white/70 hover:text-white"
+        >
+          <Trash2 size={14} />
+        </button>
+      </div>
     </div>
   );
 };

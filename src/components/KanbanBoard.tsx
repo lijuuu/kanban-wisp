@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Column from "./Column";
 import { TaskStatus } from "./Task";
@@ -88,6 +89,12 @@ const KanbanBoard = () => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
+  const handleEditTask = (id: string, newContent: string) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, content: newContent } : task
+    ));
+  };
+
   const handleCreateTask = () => {
     if (newTaskContent.trim()) {
       const newTask: Task = {
@@ -152,6 +159,7 @@ const KanbanBoard = () => {
           onDrop={handleDrop}
           onAddTask={handleAddTask}
           onDeleteTask={handleDeleteTask}
+          onEditTask={handleEditTask}
         />
         <Column
           title="In Progress"
@@ -161,6 +169,7 @@ const KanbanBoard = () => {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onDeleteTask={handleDeleteTask}
+          onEditTask={handleEditTask}
         />
         <Column
           title="Done"
@@ -170,6 +179,7 @@ const KanbanBoard = () => {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onDeleteTask={handleDeleteTask}
+          onEditTask={handleEditTask}
         />
         <Column
           title="Forfeit"
@@ -179,6 +189,7 @@ const KanbanBoard = () => {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onDeleteTask={handleDeleteTask}
+          onEditTask={handleEditTask}
         />
       </div>
 

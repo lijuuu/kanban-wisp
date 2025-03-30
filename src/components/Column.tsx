@@ -20,6 +20,7 @@ interface ColumnProps {
   onDrop: (e: React.DragEvent, status: TaskStatus) => void;
   onAddTask?: () => void;
   onDeleteTask: (id: string) => void;
+  onEditTask: (id: string, newContent: string) => void;
 }
 
 const statusColorMap: Record<TaskStatus, string> = {
@@ -38,6 +39,7 @@ const Column = ({
   onDrop,
   onAddTask,
   onDeleteTask,
+  onEditTask,
 }: ColumnProps) => {
   const columnTasks = tasks.filter((task) => task.status === status);
   
@@ -82,6 +84,7 @@ const Column = ({
             endTime={task.endTime}
             onDragStart={onDragStart}
             onDelete={onDeleteTask}
+            onEdit={onEditTask}
           />
         ))}
       </CardContent>

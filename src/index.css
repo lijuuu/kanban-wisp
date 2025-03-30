@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -96,7 +97,7 @@
 /* Custom Kanban Board Styles */
 .task-card {
   min-height: 40px;
-  min-width: 200px;
+  min-width: 230px;
 }
 
 .kanban-column {
