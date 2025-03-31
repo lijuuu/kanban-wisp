@@ -90,20 +90,20 @@
   }
 
   body {
-    @apply bg-black text-foreground;
+    @apply bg-zinc-900 text-foreground;
   }
 }
 
 /* Custom Kanban Board Styles */
 .task-card {
-  min-height: 70px;
-  min-width: 280px;
+  min-height: 80px;
+  width: 100%;
   @apply transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg;
 }
 
 .kanban-column {
   min-height: 500px;
-  background-color: rgba(20, 20, 20, 0.7);
+  background-color: rgba(24, 24, 27, 0.8);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px);
@@ -112,12 +112,12 @@
 
 .kanban-header {
   backdrop-filter: blur(10px);
-  background: rgba(10, 10, 10, 0.8);
+  background: rgba(24, 24, 27, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .task-edit-input {
-  @apply bg-gray-900 border-gray-700 text-white rounded-md w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  @apply bg-zinc-800 border-gray-700 text-white rounded-md w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
 }
 
 .task-counter {
@@ -125,5 +125,38 @@
 }
 
 .glassmorphism {
-  @apply backdrop-blur-lg bg-black/40 border border-gray-800;
+  @apply backdrop-blur-lg bg-zinc-900/40 border border-gray-800;
+}
+
+/* Scrollbar styling */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Add some animation to the task cards */
+@keyframes task-drop {
+  0% { transform: translateY(-5px); opacity: 0.8; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.task-card {
+  animation: task-drop 0.2s ease-out;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+}
+
+button:focus-visible, 
+input:focus-visible, 
+textarea:focus-visible {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
 }

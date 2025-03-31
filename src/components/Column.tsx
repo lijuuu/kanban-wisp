@@ -1,6 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import Task, { TaskStatus } from "./Task";
+import Task, { TaskStatus, TaskPriority } from "./Task";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -14,6 +14,7 @@ interface ColumnProps {
     status: TaskStatus;
     startTime?: number;
     endTime?: number;
+    priority?: TaskPriority;
   }[];
   onDragStart: (e: React.DragEvent, id: string) => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -21,6 +22,7 @@ interface ColumnProps {
   onAddTask?: () => void;
   onDeleteTask: (id: string) => void;
   onEditTask: (id: string, newContent: string) => void;
+  onPriorityChange?: (id: string, priority: TaskPriority) => void;
 }
 
 const statusColorMap: Record<TaskStatus, string> = {
@@ -31,10 +33,10 @@ const statusColorMap: Record<TaskStatus, string> = {
 };
 
 const statusBgMap: Record<TaskStatus, string> = {
-  todo: "from-gray-700/40 to-gray-900/60",
-  progress: "from-blue-900/40 to-blue-950/60",
-  done: "from-green-900/40 to-green-950/60",
-  forfeit: "from-red-900/40 to-red-950/60",
+  todo: "from-gray-800/80 to-gray-900/90",
+  progress: "from-blue-900/50 to-blue-950/70",
+  done: "from-green-900/50 to-green-950/70",
+  forfeit: "from-red-900/50 to-red-950/70",
 };
 
 const Column = ({
@@ -47,6 +49,7 @@ const Column = ({
   onAddTask,
   onDeleteTask,
   onEditTask,
+  onPriorityChange,
 }: ColumnProps) => {
   const columnTasks = tasks.filter((task) => task.status === status);
   
@@ -55,7 +58,7 @@ const Column = ({
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, status)}
       className={cn(
-        "kanban-column flex flex-col p-2 glassmorphism border-t-4 h-full bg-gradient-to-b",
+        "kanban-column flex flex-col p-4 glassmorphism border-t-4 h-full bg-gradient-to-b",
         statusColorMap[status],
         statusBgMap[status]
       )}
@@ -72,6 +75,7 @@ const Column = ({
               variant="ghost"
               size="sm"
               className="px-1 hover:bg-gray-800/50 rounded-full h-8 w-8 flex items-center justify-center"
+              aria-label="Add new task"
             >
               <PlusCircle className="h-5 w-5 text-white/80 hover:text-white" />
             </Button>
@@ -80,7 +84,7 @@ const Column = ({
       </CardHeader>
       
       <CardContent className="flex-1 px-2 pt-2 overflow-y-auto scrollbar-none">
-        <div className="space-y-3">
+        <div className="space-y-4">
           {columnTasks.map((task) => (
             <Task
               key={task.id}
@@ -89,9 +93,11 @@ const Column = ({
               status={task.status}
               startTime={task.startTime}
               endTime={task.endTime}
+              priority={task.priority}
               onDragStart={onDragStart}
               onDelete={onDeleteTask}
               onEdit={onEditTask}
+              onPriorityChange={status === "todo" ? onPriorityChange : undefined}
             />
           ))}
         </div>
